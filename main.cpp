@@ -5,6 +5,7 @@
 
 #include <argp.h>
 
+unsigned count, timeout;
 QString host, virtual_host, user, passwd;
 QStringList exchanges;
 
@@ -24,6 +25,13 @@ static error_t apf (int key, char *arg, struct argp_state *state) {
 
     case 'P':
         passwd = arg;
+        break;
+
+    case 'c':
+        count = strtoul(arg, nullptr, 0);
+        break;
+    case 't':
+        timeout = strtoul(arg, nullptr, 0) * 1000;
         break;
 
     case ARGP_KEY_ARG:
@@ -54,6 +62,12 @@ static const struct argp_option apo[] = {
     }, {
         "password", 'P', "PASSWORD", 0,
         "User password"
+    }, {
+        "count", 'c', "NUM", 0,
+        "Stop after NUM packets received"
+    }, {
+        "timeout", 't', "SEC", 0,
+        "Stop after SECs of idle"
     }, {
         0, 0, 0, 0,
         "Qt options are also acceptable."

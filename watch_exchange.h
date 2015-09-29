@@ -4,9 +4,10 @@
 #include <qamqp/qamqpglobal.h>
 
 #include <QtCore/QObject>
-#include <QtCore/QMap>
 #include <QtCore/QStringList>
+#include <QtCore/QTimer>
 
+extern unsigned count, timeout;
 extern QString host, virtual_host, user, passwd;
 extern QStringList exchanges;
 
@@ -24,11 +25,13 @@ private Q_SLOTS:
     void exchangeDeclared();
     void queueDeclared();
     void messageReceived();
+    static void stop();
 
 private:
     class QAmqpClient *rabbit;
     class QAmqpQueue *queue;
-    QMap<QString, QString> bindings;
+    QTimer idle_timer;
+
 };
 
 #endif // watch_exchange_H

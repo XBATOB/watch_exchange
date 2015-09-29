@@ -9,6 +9,10 @@
 watch_exchange::watch_exchange() {
     rabbit = new QAmqpClient(this);
 
+    connect(&idle_timer, SIGNAL(timeout()),
+            this, SLOT(stop()));
+    idle_timer.setSingleShot(true);
+
     if (!host.isEmpty())
         rabbit->setHost(host);
     if (!virtual_host.isEmpty())
@@ -72,9 +76,19 @@ void watch_exchange::messageReceived() {
     qDebug() << "headers:";
     auto hdrs = message.property (QAmqpMessage::Headers).toHash();
     for (auto h: hdrs.keys()) {
-        qDebug() << "*" << h << hdrs[h];
+        auto v = hdrs[h].toString();
+        if (v.isEmpty())
+            qDebug() << "*" << h << hdrs[h];
+        else
+            qDebug() << "*" << h << v;
     }
     qDebug() << "payload:" << message.payload();
+    if (count) {
+        if (!--count) stop();
+    }
+    if (timeout) {
+        idle_timer.start(timeout);
+    }
 }
 
 void watch_exchange::clientError(QAMQP::Error error) {
@@ -84,7 +98,7 @@ void watch_exchange::clientError(QAMQP::Error error) {
         auto c = qobject_cast<QAmqpClient *>(s);
         if (c) {
             qDebug() << "clientError:" << c->errorString();
-            goto Bye;
+            stop();
         }
     }
     {
@@ -92,13 +106,15 @@ void watch_exchange::clientError(QAMQP::Error error) {
         if (h) {
             qDebug() << "channel" << h->name() <<
                      "Error:" << h->errorString();
-            goto Bye;
+            stop();
 
         }
     }
-Bye:
-    QCoreApplication::instance()->quit();
+    stop();
+}
 
+void watch_exchange::stop() {
+    QCoreApplication::instance()->quit();
 }
 
 #include "watch_exchange.moc"
