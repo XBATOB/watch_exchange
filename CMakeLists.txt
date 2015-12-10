@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.6)
-project(watch_exchange)
+cmake_minimum_required(VERSION 3.0)
+project(watch_exchange VERSION 1.0)
 find_package(Qt4 REQUIRED)
 include(FindPkgConfig)
 pkg_check_modules(M REQUIRED qamqp)
@@ -21,3 +21,13 @@ target_link_libraries(watch_exchange
     ${QT_QTCORE_LIBRARY})
 
 install(TARGETS watch_exchange RUNTIME DESTINATION bin)
+
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_GENERATOR "RPM")
+set(CPACK_PACKAGE_NAME "watch-exchange")
+set(CPACK_PACKAGE_RELEASE 1)
+set(CPACK_PACKAGE_CONTACT "Serguei Khvatov")
+set(CPACK_PACKAGE_VENDOR "RUTOLL")
+set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+include(CPack)
