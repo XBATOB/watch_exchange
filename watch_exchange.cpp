@@ -1,6 +1,7 @@
 #include "watch_exchange.h"
 
-#include <QDebug>
+#include <iostream>
+#include <iomanip>
 #include <QCoreApplication>
 #include <qamqp/qamqpclient.h>
 #include <qamqp/qamqpexchange.h>
@@ -66,23 +67,60 @@ void watch_exchange::queueDeclared() {
     }
 }
 
+void indent (unsigned level) {
+    if (level)
+        std::cout << std::setw(level * 4) << ' ';
+}
+
+void display (unsigned level,
+              QString const &title,
+              QVariant const &data) {
+    indent (level);
+    std::cout << title.toStdString() << ':';
+
+    switch (data.type()) {
+    case QVariant::Hash: {
+        std::cout << '{' << std::endl;
+        auto h = data.toHash();
+        for (auto const &k: h.keys()) {
+            display (level+1, k, h[k]);
+        }
+        indent (level);
+        std::cout << '}';
+        break;
+    }
+    case QVariant::List: {
+        std::cout << '[' << std::endl;
+        for (auto const &e: data.toList()) {
+            display (level+1, "", e);
+        }
+        indent (level);
+        std::cout << ']';
+        break;
+    }
+    default: {
+        std::cout <<data.typeName() << ':';
+        if (data.canConvert<QString>()) {
+            QString s = data.toString();
+            std::cout << s.toStdString();
+        } else {
+            std::cout << "CAN NOT CONVERT";
+        }
+        break;
+    }
+    } // switch
+    std::cout << std::endl;
+}
+
 void watch_exchange::messageReceived() {
     QAmqpQueue *q = qobject_cast<QAmqpQueue*> (sender());
     if (!q) return;
 
     QAmqpMessage message = q->dequeue();
-    qDebug() << "*** Message Received ***";
-    qDebug() << "key:" << message.routingKey();
-    qDebug() << "headers:";
-    auto hdrs = message.property (QAmqpMessage::Headers).toHash();
-    for (auto h: hdrs.keys()) {
-        auto v = hdrs[h].toString();
-        if (v.isEmpty())
-            qDebug() << "*" << h << hdrs[h];
-        else
-            qDebug() << "*" << h << v;
-    }
-    qDebug() << "payload:" << message.payload();
+    std::cout << "*** Message Received ***" << std::endl;
+    display (0, "key", message.routingKey());
+    display (0, "headers", message.property (QAmqpMessage::Headers));
+    display (0, "payload", message.payload());
     if (count) {
         if (!--count) stop();
     }
