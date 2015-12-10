@@ -76,7 +76,8 @@ void display (unsigned level,
               QString const &title,
               QVariant const &data) {
     indent (level);
-    std::cout << title.toStdString() << ':';
+    if (!title.isNull())
+        std::cout << title.toStdString() << ':';
 
     switch (data.type()) {
     case QVariant::Hash: {
@@ -92,7 +93,7 @@ void display (unsigned level,
     case QVariant::List: {
         std::cout << '[' << std::endl;
         for (auto const &e: data.toList()) {
-            display (level+1, "", e);
+            display (level+1, QString(), e);
         }
         indent (level);
         std::cout << ']';
@@ -120,6 +121,10 @@ void watch_exchange::messageReceived() {
     std::cout << "*** Message Received ***" << std::endl;
     display (0, "key", message.routingKey());
     display (0, "headers", message.property (QAmqpMessage::Headers));
+    display (0, "content-type",
+             message.property (QAmqpMessage::ContentType));
+    display (0, "content-encoding",
+             message.property (QAmqpMessage::ContentEncoding));
     display (0, "payload", message.payload());
     if (count) {
         if (!--count) stop();
