@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <QCoreApplication>
+#include <QDateTime>
 #include <qamqp/qamqpclient.h>
 #include <qamqp/qamqpexchange.h>
 #include <qamqp/qamqpqueue.h>
@@ -99,8 +100,13 @@ void display (unsigned level,
         std::cout << ']';
         break;
     }
+    case QVariant::DateTime: {
+        std::cout << data.typeName() << ':' << data.toDateTime().
+                  toString("yyyy-MM-ddThh:mm:ss.zzz").toStdString();
+        break;
+    }
     default: {
-        std::cout <<data.typeName() << ':';
+        std::cout << data.typeName() << ':';
         if (data.canConvert<QString>()) {
             QString s = data.toString();
             std::cout << s.toStdString();
