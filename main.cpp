@@ -84,7 +84,7 @@ static const struct argp ap = {
 
 int main(int argc, char** argv) {
     QCoreApplication app(argc, argv);
-    QTextCodec::setCodecForCStrings (
+    QTextCodec::setCodecForLocale (
         QTextCodec::codecForName ("UTF-8"));
 
     argp_parse (&ap, argc, argv, 0, 0, 0);

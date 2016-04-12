@@ -4,9 +4,9 @@
 #include <iomanip>
 #include <QCoreApplication>
 #include <QDateTime>
-#include <qamqp/qamqpclient.h>
-#include <qamqp/qamqpexchange.h>
-#include <qamqp/qamqpqueue.h>
+#include <qamqpclient.h>
+#include <qamqpexchange.h>
+#include <qamqpqueue.h>
 
 watch_exchange::watch_exchange() {
     rabbit = new QAmqpClient(this);

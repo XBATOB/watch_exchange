@@ -1,7 +1,7 @@
 #ifndef watch_exchange_H
 #define watch_exchange_H
 
-#include <qamqp/qamqpglobal.h>
+#include <qamqpglobal.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
