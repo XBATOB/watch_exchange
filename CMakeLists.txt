@@ -3,7 +3,7 @@ project(watch_exchange VERSION 1.1)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
-find_package(Qt5 COMPONENTS Widgets Core Network)
+find_package(Qt5 COMPONENTS Core Network)
 
 include(FindPkgConfig)
 pkg_check_modules(M REQUIRED qamqp-qt5)
@@ -13,7 +13,6 @@ set(CMAKE_CXX_FLAGS
 
 include_directories(
     ${M_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDE_DIRS}
     ${Qt5Core_INCLUDE_DIRS}
     ${Qt5Network_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR})
@@ -24,7 +23,6 @@ set(watch_exchange_SRCS watch_exchange.cpp main.cpp)
 add_executable(watch_exchange ${watch_exchange_SRCS})
 target_link_libraries(watch_exchange
     ${M_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
     ${Qt5Core_LIBRARIES}
     ${Qt5Network_LIBRARIES})
 
