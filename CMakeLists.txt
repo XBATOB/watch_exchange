@@ -1,24 +1,33 @@
 cmake_minimum_required(VERSION 3.0)
 project(watch_exchange VERSION 1.1)
-find_package(Qt4 REQUIRED)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+find_package(Qt5 REQUIRED
+    COMPONENTS Core Network)
+
 include(FindPkgConfig)
-pkg_check_modules(M REQUIRED qamqp)
+pkg_check_modules(M REQUIRED qamqp-qt5)
 
 set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+set(CMAKE_C_FLAGS_DEBUG
+    "${CMAKE_C_FLAGS_DEBUG}   -Wall -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG
+    "${CMAKE_CXX_FLAGS_DEBUG} -Wall -DDEBUG")
 
 include_directories(
-    ${M_INCLUDE_DIRS}
-    ${QT_INCLUDES}
-    ${CMAKE_CURRENT_BINARY_DIR})
+    ${Qt5Core_INCLUDE_DIRS}
+    ${Qt5Network_INCLUDE_DIRS}
+    ${M_INCLUDE_DIRS})
 
 set(watch_exchange_SRCS watch_exchange.cpp main.cpp)
 
-qt4_automoc(${watch_exchange_SRCS})
 add_executable(watch_exchange ${watch_exchange_SRCS})
 target_link_libraries(watch_exchange
-    ${M_LIBRARIES}
-    ${QT_QTCORE_LIBRARY})
+    Qt5::Core Qt5::Network
+    ${M_LIBRARIES})
 
 install(TARGETS watch_exchange RUNTIME DESTINATION bin)
 
