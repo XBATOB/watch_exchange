@@ -8,6 +8,7 @@
 unsigned count, timeout;
 QString host, virtual_host, user, passwd;
 QStringList exchanges;
+watch_exchange::SHOW_SECTIONS sections = watch_exchange::SHOW_ALL;
 
 static error_t apf (int key, char *arg, struct argp_state *state) {
     switch (key) {
@@ -30,8 +31,13 @@ static error_t apf (int key, char *arg, struct argp_state *state) {
     case 'c':
         count = strtoul(arg, nullptr, 0);
         break;
+
     case 't':
         timeout = strtoul(arg, nullptr, 0) * 1000;
+        break;
+
+    case 's':
+        sections = watch_exchange::list2sections (arg);
         break;
 
     case ARGP_KEY_ARG:
@@ -69,6 +75,10 @@ static const struct argp_option apo[] = {
         "timeout", 't', "SEC", 0,
         "Stop after SECs of idle"
     }, {
+        "sections", 's', "list", 0,
+        "Sections to show"
+        " [ALL=KEY|HEADERS|TYPE|PAYLOAD]"
+    }, {
         0, 0, 0, 0,
         "Qt options are also acceptable."
         " See Qt documentation.", -10
@@ -87,6 +97,6 @@ int main(int argc, char** argv) {
 
     argp_parse (&ap, argc, argv, 0, 0, 0);
 
-    watch_exchange watch_exchange;
+    watch_exchange watch_exchange (sections);
     return app.exec();
 }
