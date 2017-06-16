@@ -49,7 +49,7 @@ static error_t apf (int key, char *arg, struct argp_state *state) {
 
     case ARGP_KEY_END:
         if (exchanges.isEmpty())
-            argp_error (state, "No exchanges set");
+            argp_error (state, "No exchanges given");
         break;
 
     default:
@@ -60,6 +60,19 @@ static error_t apf (int key, char *arg, struct argp_state *state) {
 
 static const struct argp_option apo[] = {
     {
+        "count", 'c', "NUM", 0,
+        "Stop after NUM packets received"
+    }, {
+        "timeout", 't', "SEC", 0,
+        "Stop after SECs of idle"
+    }, {
+        "sections", 's', "list", 0,
+        "Sections to show"
+        " [ALL=KEY|HEADERS|TYPE|PAYLOAD]"
+    }, {
+        0, 0, 0, 0,
+        "Server connection options:"
+    }, {
         "host", 'H', "NAME", 0,
         "Server host"
     }, {
@@ -71,16 +84,6 @@ static const struct argp_option apo[] = {
     }, {
         "password", 'P', "PASSWORD", 0,
         "User password"
-    }, {
-        "count", 'c', "NUM", 0,
-        "Stop after NUM packets received"
-    }, {
-        "timeout", 't', "SEC", 0,
-        "Stop after SECs of idle"
-    }, {
-        "sections", 's', "list", 0,
-        "Sections to show"
-        " [ALL=KEY|HEADERS|TYPE|PAYLOAD]"
     }, {
         0, 0, 0, 0,
         "Qt options are also acceptable."

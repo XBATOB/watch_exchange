@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(watch_exchange VERSION 1.1)
+project(watch_exchange VERSION 1.2)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
