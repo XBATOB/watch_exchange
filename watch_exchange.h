@@ -25,7 +25,7 @@ public:
     Q_DECLARE_FLAGS (SHOW_SECTIONS, SHOW_SECTION)
     Q_FLAG (SHOW_SECTIONS)
 
-    static SHOW_SECTIONS list2sections (const char *list);
+    static int list2sections (const char *list);
 
     watch_exchange (SHOW_SECTIONS show_sections = SHOW_ALL);
     virtual ~watch_exchange();

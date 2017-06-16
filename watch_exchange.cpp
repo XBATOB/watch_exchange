@@ -173,14 +173,13 @@ void watch_exchange::stop() {
     QCoreApplication::instance()->quit();
 }
 
-watch_exchange::SHOW_SECTIONS watch_exchange::list2sections (const char* list) {
+int watch_exchange::list2sections (const char* list) {
     static const QMetaEnum rts_modes =
         watch_exchange::staticMetaObject.enumerator (
             watch_exchange::staticMetaObject.indexOfEnumerator (
                 "SHOW_SECTIONS"));
-    auto mv = rts_modes.keyToValue ( ("SHOW_" + QString (list).toUpper())
-                                     .toLatin1().constData());
-    return SHOW_SECTIONS (mv);
+    return rts_modes.keyToValue ( ("SHOW_" + QString (list).toUpper())
+                                  .toLatin1().constData());
 }
 
 

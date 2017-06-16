@@ -36,10 +36,13 @@ static error_t apf (int key, char *arg, struct argp_state *state) {
         timeout = strtoul(arg, nullptr, 0) * 1000;
         break;
 
-    case 's':
-        sections = watch_exchange::list2sections (arg);
+    case 's': {
+        int s = watch_exchange::list2sections (arg);
+        if (s == -1)
+            argp_error (state, "invalid section list: %s", arg);
+        sections = watch_exchange::SHOW_SECTIONS(s);
         break;
-
+    }
     case ARGP_KEY_ARG:
         exchanges << arg;
         break;
